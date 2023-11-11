@@ -1,7 +1,6 @@
 """
-This PySpark program shows how to apply groupbykey using RDD
+This PySpark program shows how to apply aggregatebykey using RDD
 """
-from operator import add
 from pyspark import SparkContext, SparkConf
 conf = SparkConf().setAppName('Test').setMaster('local[*]')
 sc=SparkContext(conf=conf)
