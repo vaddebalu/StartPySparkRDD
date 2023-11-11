@@ -5,8 +5,27 @@ from operator import add
 from pyspark import SparkContext, SparkConf
 conf = SparkConf().setAppName('Test').setMaster('local[*]')
 sc=SparkContext(conf=conf)
-distData = sc.parallelize([23,12,11,552,22,66,77,88,23,555,64,6555,54,6871,6874,434,5,4,54,54,4,4,54,546,6445])
-mapped=distData.map(lambda x:(x,1))
-#apply reduceByKey using add operator
-numcount=mapped.aggregateByKey(add)
-numcount.saveAsTextFile('num50')
+# Sample data
+data = [("apple", 3), ("orange", 5), ("apple", 7), ("banana", 2), ("orange", 8)]
+
+# Creating a Pair RDD
+rdd = sc.parallelize(data)
+
+
+# Define zeroValue, seqOp, and combOp functions
+zero_value = (0, 0)  # (sum, count)
+def seqop(acc,value):
+    print('before seq function')
+    print(acc,value)
+    return acc+value
+
+def combop(acc1,acc2):
+    print('before comb function ...')
+    print(acc1,acc2)
+    return acc1+acc2
+
+# Using aggregateByKey to find the total count for each word
+result = rdd.aggregateByKey(zero_value, seqop, combop)
+
+# Save the result
+result.saveAsTextFile('num50')
